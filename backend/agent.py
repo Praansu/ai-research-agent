@@ -62,13 +62,28 @@ def run_agent_stream(user_message: str, history: list[dict], store) -> list[dict
     for step in range(MAX_STEPS):
         try:
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=messages,
                 tools=TOOL_SCHEMAS,
                 tool_choice="auto",
                 temperature=0.3,
             )
         except Exception as e:
+            # If tool calling itself failed (e.g. Groq rejecting a malformed
+            # generated call), retry once with tools disabled so we still answer.
+            if step == 0 and "tool_use_failed" in str(e):
+                try:
+                    response = client.chat.completions.create(
+                        model="llama-3.1-8b-instant",
+                        messages=messages,
+                        temperature=0.3,
+                    )
+                    answer = response.choices[0].message.content or ""
+                    events.append(StreamEvent(type="done", content=answer).model_dump())
+                    return events
+                except Exception as e2:
+                    events.append(StreamEvent(type="error", error=f"LLM call failed: {str(e2)}").model_dump())
+                    return events
             events.append(StreamEvent(type="error", error=f"LLM call failed: {str(e)}").model_dump())
             return events
 

@@ -2,7 +2,7 @@
 
 An AI agent that answers questions by combining **your uploaded documents** (RAG) and **live web search** — without any agent framework. The agent loop, tool calling, and retrieval are all built from scratch.
 
-![stack](https://img.shields.io/badge/Python-3.11-3776AB?logo=python) ![framework](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi) ![llm](https://img.shields.io/badge/Groq-Llama_3.3_70B-f55036?logo=groq) ![rag](https://img.shields.io/badge/ChromaDB-vector-blue)
+![stack](https://img.shields.io/badge/Python-3.11-3776AB?logo=python) ![framework](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi) ![llm](https://img.shields.io/badge/Groq-Llama_3.1_8B_Instant-f55036?logo=groq) ![rag](https://img.shields.io/badge/ChromaDB-vector-blue)
 
 ## What it does
 
@@ -43,7 +43,7 @@ streamed answer (SSE) + live tool-call cards in the chat UI
 ### 1. Get a free API key
 
 1. Create a free account at [console.groq.com](https://console.groq.com)
-2. Go to **API Keys** → **Create API Key** (free tier includes Llama 3.3 70B)
+2. Go to **API Keys** → **Create API Key** (free tier — the agent uses Llama 3.1 8B Instant, which is fast and supports tool calling)
 3. Copy the key
 
 ### 2. Run it locally
