@@ -1,0 +1,87 @@
+name: Doc Sync (TODO/FIXME → CHANGELOG)
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # 11 AM UTC daily
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/**/*.py'
+      - 'frontend/**/*.html'
+      - 'frontend/**/*.js'
+      - 'frontend/**/*.css'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Scan for TODOs/FIXMEs
+        id: scan
+        run: |
+          # Find all TODO/FIXME comments
+          todos=$(grep -r -n -i "TODO\|FIXME" --include="*.py" --include="*.html" --include="*.js" --include="*.css" backend/ frontend/ 2>/dev/null || true)
+          echo "todos<<EOF" >> $GITHUB_OUTPUT
+          echo "$todos" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Count
+          count=$(echo "$todos" | grep -c '^' || echo 0)
+          echo "count=$count" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG.md
+        if: steps.scan.outputs.count > 0
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          today=$(date +%Y-%m-%d)
+          
+          # Create CHANGELOG.md if missing
+          if [ ! -f CHANGELOG.md ]; then
+            cat > CHANGELOG.md << 'EOF'
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Ver](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+EOF
+          fi
+          
+          # Prepend new entries to Unreleased section
+          branch="docs/sync-todos-${today}"
+          git checkout -b "$branch"
+          
+          # Create a temporary file with new entries
+          cat > /tmp/new_entries.md << EOF
+### Added
+- Auto-synced TODO/FIXME items from codebase (${today})
+
+EOF
+          
+          # Insert after "## [Unreleased]" line
+          sed -i "/## \[Unreleased\]/r /tmp/new_entries.md" CHANGELOG.md
+          
+          git add CHANGELOG.md
+          git commit -m "docs: sync TODO/FIXME items to CHANGELOG (${today})"
+          git push origin "$branch"
+          
+          gh pr create \
+            --title "docs: sync TODO/FIXME items to CHANGELOG (${today})" \
+            --body "Automated sync of code comments to CHANGELOG.md. Review and merge." \
+            --label "documentation,automated" \
+            --base main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
