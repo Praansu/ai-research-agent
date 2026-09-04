@@ -23,7 +23,7 @@ class ToolCallEvent(BaseModel):
 
 
 class StreamEvent(BaseModel):
-    type: str  # "tool_call" | "chunk" | "done" | "error"
+    type: str  # "tool_call" | "chunk" | "done" | "error" | "warning"
     tool: str | None = None
     args: dict | None = None
     result: str | None = None

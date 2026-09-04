@@ -148,6 +148,11 @@
       border-color: var(--err) !important;
       color: var(--err);
     }
+    .warn-bubble {
+      border-color: #fbbf24 !important;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+    }
 
     /* Input */
     .input-bar {
@@ -284,6 +289,15 @@ function addError(text) {
   scroll();
 }
 
+function addWarning(text) {
+  const div = document.createElement("div");
+  div.className = "msg assistant";
+  div.innerHTML = `<div class="avatar">🤖</div><div class="bubble warn-bubble"></div>`;
+  div.querySelector(".bubble").textContent = text;
+  chatEl.appendChild(div);
+  scroll();
+}
+
 function escapeHtml(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -397,6 +411,9 @@ async function send() {
           history.push({ role: "user", content: text });
           history.push({ role: "assistant", content: ev.content || "" });
           if (history.length > 20) history = history.slice(-20);
+        } else if (ev.type === "warning") {
+          thinking.remove();
+          addWarning(ev.content || "warning");
         } else if (ev.type === "error") {
           thinking.remove();
           addError(ev.error || "unknown error");

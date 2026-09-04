@@ -73,6 +73,12 @@ def run_agent_stream(user_message: str, history: list[dict], store) -> list[dict
             # generated call), retry once with tools disabled so we still answer.
             if step == 0 and "tool_use_failed" in str(e):
                 try:
+                    # Emit warning so user knows tools were disabled
+                    events.append(StreamEvent(
+                        type="warning",
+                        content="⚠️ Tool calling temporarily unavailable — answering from knowledge only (no document/web sources)."
+                    ).model_dump())
+                    
                     response = client.chat.completions.create(
                         model="llama-3.1-8b-instant",
                         messages=messages,
