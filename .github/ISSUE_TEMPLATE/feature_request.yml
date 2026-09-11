@@ -1,0 +1,39 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe what you'd like to see.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this solve? Why is it needed?
+      placeholder: "Currently the agent can't..."
+    required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How should this work? Any implementation ideas?
+      placeholder: "Add a new tool that..."
+    required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low (nice to have)
+        - Medium (would improve UX)
+        - High (blocking a use case)
+    required: true
+  - type: checkboxes
+    id: willingness
+    attributes:
+      label: Willingness to Contribute
+      options:
+        - label: "I'm willing to implement this myself"
+        - label: "I can help test the implementation"

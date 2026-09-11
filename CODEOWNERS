@@ -1,0 +1,16 @@
+# Code Owners
+# These users will be automatically requested for review on PRs touching these files
+
+* @Praansu
+
+# Backend
+/backend/ @Praansu
+
+# Frontend
+/frontend/ @Praansu
+
+# CI/CD
+/.github/ @Praansu
+
+# Documentation
+*.md @Praansu

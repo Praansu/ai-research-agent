@@ -1,0 +1,54 @@
+name: Bug Report
+description: Report a bug in the AI Research Agent
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out the sections below.
+  - type: input
+    id: version
+    attributes:
+      label: Version/Commit
+      description: What commit or version are you running?
+      placeholder: "e.g., main branch, commit abc123"
+    required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened vs what you expected?
+      placeholder: "I uploaded a PDF and asked a question, but got an error..."
+    required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the bug
+      placeholder: |
+        1. Start the server
+        2. Upload a PDF
+        3. Ask a question
+        4. See error
+    required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Paste any relevant error messages or logs
+      render: shell
+    required: false
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Agent loop
+        - RAG/ChromaDB
+        - Web search
+        - Groq API
+        - Frontend/UI
+        - Docker
+        - Other
+    required: true
