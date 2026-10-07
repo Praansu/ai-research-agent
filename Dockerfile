@@ -14,7 +14,8 @@ COPY backend ./backend
 COPY frontend ./frontend
 
 ENV GROQ_API_KEY=""
-
+# Spaces and most PaaS routers expect the app on $PORT (HF Spaces: 7860).
+# Local default stays 8000, matching the README.
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
